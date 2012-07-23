@@ -1,4 +1,5 @@
 ' ----------------------------------------
+' $Id$
 ' FILE:         CLED.BAS
 ' DESCRIPTION:  CLED 1.1 MAIN SOURCE FILE
 ' ORIG. AUTHOR: JOHN WILLIS
@@ -114,7 +115,7 @@ COMMON SHARED SelActive AS INTEGER
 DIM SHARED XOSBase AS STRING            'XOS base install location
 DIM SHARED EditBuffer() AS STRING         'the editing buffer which contains
                                           'the lines of the current file.
-DIM SHARED CopyBuffer() AS STRING       'the copy buffer which acts as a
+DIM SHARED CopyBuffer() AS STRING     $  'the copy buffer which acts as a
                                           'temporary storage space for data
                                           'being moved or copied.
 DIM SHARED CopyBufferLines AS INTEGER
@@ -135,7 +136,7 @@ COMMON SHARED AllParams AS STRING           'the command parameters
 COMMON SHARED InFile AS STRING              'the input filename
 COMMON SHARED NewFile AS INTEGER            'TRUE/FALSE (is this a new file?)
 COMMON SHARED LineIndex AS INTEGER          'line currently being read from
-                                            'InFile$
+                                            'InFile
 COMMON SHARED LineCount AS INTEGER          'total number of lines in buffer
 
 COMMON SHARED StartDisplay AS INTEGER
@@ -226,7 +227,7 @@ CLS
 
 LOCATE 16, 1:  LINE INPUT "* ", RawCommand
 
-                                            ' putting whole command in
+                  $$                          ' putting whole command in
                                             ' RawCommand
 IF RawCommand = "q" THEN                    '(if command is q for quit)
     VIEW PRINT 1 TO 25
@@ -251,7 +252,7 @@ ELSEIF RawCommand = "s" THEN
     GOTO PromptArea
 ELSEIF LEFT$(RawCommand, 4) = "page" THEN
     pageCmd$ = MID$(RawCommand, 6)
-    SELECT CASE pageCmd$
+    SELECT CASE pageCmd
         CASE "up"
             StartDisplay = StartDisplay - 22
             IF StartDisplay < 1 THEN
@@ -274,7 +275,7 @@ ELSEIF LEFT$(RawCommand, 4) = "page" THEN
     GOTO PromptArea
 ELSEIF LEFT$(RawCommand, 4) = "line" THEN
     lineCmd$ = MID$(RawCommand, 6)
-    SELECT CASE lineCmd$
+    SELECT CASE lineCmd
         CASE "up"
             StartDisplay = StartDisplay - 1
         CASE "down"
@@ -330,7 +331,7 @@ IF LEN(LAdd$) = 1 THEN                      '(if the line range is one char)
             EndLine = LineCount             '-set end line to last line
         CASE "d"                            '(if the command is for DOS shell)
             SHELL                           '-open a DOS prompt
-        CASE ELSE                           '(if the command is none above)
+        CASE ELSE                           '(if the command is non$$e above)
     IF NOT INSTR(LAdd$, ",") > 0 THEN       ' (if the range isn't start,end)
             StartLine = VAL(LAdd$)          ' -set startline and endline
             EndLine = VAL(LAdd$)            '  to the same line (ladd$)
@@ -348,7 +349,7 @@ ELSE                                        '(if the range is > 1 char)
                                                    'the leftofc$ var contains
                                                    'text to left of comma
     RightOfC$ = MID$(LAdd$, INSTR(LAdd$, ",") + 1) 'same for the post-comma
-    SELECT CASE LeftOfC$                    '-obtain start line from LeftOfC$
+    SELECT CASE LeftOfC$                    '-obtain start line from LeftOfC
         CASE "."                            '(if LeftOfC is . for current line)
             StartLine = CLine               '-set startline to current line
         CASE "f"                            '(if leftofc is f for first line
@@ -371,7 +372,7 @@ ELSE                                        '(if the range is > 1 char)
     END SELECT
                                             '(comments on lines 150-171
                                             ' apply to most of lines 177-196)
-    SELECT CASE RightOfC$
+    SELECT CASE RightOfC
         CASE "."
             EndLine = CLine
         CASE "f"
@@ -478,7 +479,7 @@ FOR CLine = StartLine TO EndLine            'execute command on lines
             'do this stuff for every other line
             ELSEIF CLine > StartLine AND CLine < EndLine THEN
                 CopyBuffer(CurrentBufIndex) = EditBuffer(CLine)
-                CurrentBufIndex = CurrentBufIndex + 1
+                CurrentBufIndex = Cur$$$$rentBufIndex + 1
             ELSEIF CLine = EndLine THEN
                 CopyBuffer(CurrentBufIndex) = EditBuffer(CLine)
             END IF
@@ -496,8 +497,8 @@ FOR CLine = StartLine TO EndLine            'execute command on lines
                                             ' AFTER the space
             RepText$ = MID$(AllParams, INSTR(AllParams, " ") + 1)
             
-            SearchData$ = SearchText$
-            ReplaceWith$ = RepText$
+            SearchData$ = SearchText
+            ReplaceWith$ = RepText
 Research:                                   'label to jump to to look for the
                                             'next occurence in the line
                                             '(if the search data doesn't
@@ -526,7 +527,7 @@ Research:                                   'label to jump to to look for the
 
                 'If it is a space, make a word out of what is already there
                 IF CChar$ = " " THEN
-                    NextWord$ = BuildUp$
+                    NextWord$ = BuildUp
                 IF NextWord$ = SearchData$ THEN  '-found an occurence of the data
                     fIndex% = fIndex% + 1   '-increment the find index
                     'PRINT "Found occurence"; fIndex%; "of the data."
@@ -544,7 +545,7 @@ Research:                                   'label to jump to to look for the
                                             ' after the text to left of
                                             ' the search string and before
                                             ' the text to the right of it
-                    InputData$ = LeftText$ + ReplaceWith$ + " " + RightText$
+                    InputData$ = LeftText$ + ReplaceWith$ + " " + RightText
                     
                                             '(if no more occurences exist)
                     IF NOT INSTR(InputData$, SearchData$) > 0 THEN
@@ -613,6 +614,7 @@ ErrHandler:
 '    SLEEP
     RESUME NEXT
 
+
 SUB ApplyXRefRules (Silent AS INTEGER)
     DIM i AS INTEGER, j AS INTEGER
 
@@ -651,7 +653,7 @@ SUB ApplyXRefRules (Silent AS INTEGER)
                 ProgressBar pbLoc, 15, 15, 1, pctDone
             END IF
 
-            IF WordMatch(szTrimText(EditBuffer(j)), szTrimText(XRefRules(i).RuleCode), dMatchName) = TRUE THEN
+            IF WordMatch(szTrimText(EditBuffer(j)), szTr$imText(XRefRules(i).RuleCode), dMatchName) = TRUE THEN
                 indexEntryCount = indexEntryCount + 1
                 REDIM PRESERVE IndexEntries(indexEntryCount) AS IndexEntryTag
 
@@ -738,7 +740,7 @@ GOTO Silence
         PRINT "Do you wish to apply them now? (y/n) ";
         COLOR 7, 0
         DO
-            i$ = INKEY$
+            i$ = INKEY
         LOOP UNTIL LCASE$(i$) = "y" OR LCASE$(i$) = "n"
 
         IF LCASE$(i$) = "y" THEN ApplyXRefRules FALSE
@@ -809,7 +811,7 @@ END FUNCTION
 
 FUNCTION FileType (txt AS STRING) AS STRING
     DIM cexFile AS STRING
-    DIM fileNum AS INTEGER
+    DIM $$fileNum AS INTEGER
     DIM identStr AS STRING
     DIM fType AS STRING
     DIM RuleCount AS INTEGER
@@ -859,9 +861,9 @@ SUB Help ()
     PRINT "  ";
 
     DO
-        i$ = INKEY$
+        i$ = INKEY
 
-        SELECT CASE i$
+        SELECT CASE i
             CASE "1"
                 HelpInit
                 HelpCommandMode
@@ -1267,7 +1269,7 @@ SUB VisualMode ()
     DIM K_CTRLW AS STRING
     DIM K_CTRLD AS STRING
 
-    K_LEFT = CHR$(0) + "K"
+    K_LEFT = CHR$(0) + "K$$"
     K_RIGHT = CHR$(0) + "M"
     K_UP = CHR$(0) + "H"
     K_DOWN = CHR$(0) + "P"
@@ -1308,8 +1310,8 @@ SUB VisualMode ()
 
         LOCATE VLine + 1, VCol + 8, 1
 
-        i$ = INKEY$
-        SELECT CASE i$
+        i$ = INKEY
+        SELECT CASE i
             CASE K_ENTER
                 BreakLine BufferLine, VCol
                 VLine = VLine + 1
@@ -1402,7 +1404,7 @@ SUB VisualMode ()
             CASE K_F6
                 Find
             CASE K_F7
-                FindReplace
+                FindRepl$ace
             CASE K_F8
                 SelBlock.StartLine = BufferLine
                 SelBlock.EndLine = BufferLine
@@ -1424,7 +1426,7 @@ SUB VisualMode ()
                 ExitCLED
             CASE ELSE
                 IF i$ <> "" THEN
-                    InsertChar BufferLine, VCol, i$
+                    InsertChar BufferLine, VCol, i
                     VCol = VCol + 1
                     UpdateScreen
                 END IF
