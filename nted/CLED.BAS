@@ -1,5 +1,4 @@
 ' ----------------------------------------
-' $Id$
 ' FILE:         CLED.BAS
 ' DESCRIPTION:  CLED 1.1 MAIN SOURCE FILE
 ' ORIG. AUTHOR: JOHN WILLIS
@@ -1442,4 +1441,3 @@ SUB WaitOutput ()
     WHILE INKEY$ <> CHR$(27): WEND
     COLOR 7, 0
 END SUB
-
